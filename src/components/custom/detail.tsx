@@ -2,7 +2,7 @@ import React from "react";
 
 interface DetailProps {
   label: string;
-  value: string;
+  value?: string;
 }
 
 const Detail = ({ label, value }: DetailProps) => {

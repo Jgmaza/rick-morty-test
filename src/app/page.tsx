@@ -5,45 +5,32 @@ import Detail from "@/components/custom/detail";
 import SearchInput from "@/components/custom/searchInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
+import { useQuery, gql } from "@apollo/client";
+import { ICharacter } from "@/lib/types";
 
-const favoriteCharacters = [
-  {
-    name: "Rick Sanchez",
-    species: "Human",
-    image: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
-  },
-  {
-    name: "Morty Smith",
-    species: "Human",
-    image: "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
-  },
-];
-
-const characters = [
-  {
-    name: "Summer Smith",
-    species: "Human",
-    image: "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
-  },
-  {
-    name: "Beth Smith",
-    species: "Human",
-    image: "https://rickandmortyapi.com/api/character/avatar/4.jpeg",
-  },
-  {
-    name: "Jerry Smith",
-    species: "Human",
-    image: "https://rickandmortyapi.com/api/character/avatar/5.jpeg",
-  },
-  {
-    name: "Abadango Cluster Princess",
-    species: "Alien",
-    image: "https://rickandmortyapi.com/api/character/avatar/6.jpeg",
-  },
-];
+const GET_CHARACTERS = gql`
+  query GetCharacters {
+    characters {
+      id
+      name
+      species {
+        name
+        id
+      }
+      gender
+      status
+      image
+      isFavorite
+    }
+  }
+`;
 
 export default function Home() {
-  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
+  const { loading, error, data } = useQuery<{
+    characters: ICharacter[];
+  }>(GET_CHARACTERS);
+
+  const [selectedCharacter, setSelectedCharacter] = useState<ICharacter>();
   return (
     <main className="h-screen bg-white">
       <div className="flex flex-row h-full">
@@ -59,27 +46,47 @@ export default function Home() {
           {/* Character list */}
           <div className="h-full overflow-y-auto mt-8">
             <div className="pl-5 pb-4 text-sm text-gray-500">
-              <p>STARRED CHARACTERS (2)</p>
+              <p>
+                STARRED CHARACTERS (
+                {
+                  data?.characters?.filter(
+                    (character: ICharacter) => character.isFavorite
+                  ).length
+                }
+                )
+              </p>
             </div>
-            {favoriteCharacters.map((character, item) => (
-              <CustomCard
-                key={item}
-                character={{ ...character, isFavorite: true }}
-                onClick={() => setSelectedCharacter(character)}
-                selectedCharacter={selectedCharacter}
-              />
-            ))}
+            {data?.characters
+              ?.filter((character: ICharacter) => character.isFavorite)
+              .map((character: ICharacter) => (
+                <CustomCard
+                  key={character.id}
+                  character={character}
+                  onClick={() => setSelectedCharacter(character)}
+                  selectedCharacter={selectedCharacter}
+                />
+              ))}
             <div className="mt-8 pl-5 pb-4 text-sm text-gray-500">
-              <p>CHARACTERS (4)</p>
+              <p>
+                CHARACTERS (
+                {
+                  data?.characters.filter(
+                    (character: ICharacter) => !character.isFavorite
+                  ).length
+                }
+                )
+              </p>
             </div>
-            {characters.map((character, item) => (
-              <CustomCard
-                key={item}
-                character={{ ...character, isFavorite: false }}
-                onClick={() => setSelectedCharacter(character)}
-                selectedCharacter={selectedCharacter}
-              />
-            ))}
+            {data?.characters
+              ?.filter((character: ICharacter) => !character.isFavorite)
+              .map((character: ICharacter) => (
+                <CustomCard
+                  key={character.id}
+                  character={character}
+                  onClick={() => setSelectedCharacter(character)}
+                  selectedCharacter={selectedCharacter}
+                />
+              ))}
           </div>
         </div>
         {/* Character details */}
@@ -115,9 +122,9 @@ export default function Home() {
               <p className="text-xl text-[#1F2937] font-bold my-4">
                 {selectedCharacter.name}
               </p>
-              <Detail label="Species" value={selectedCharacter.species} />
-              <Detail label="Status" value="Alive" />
-              <Detail label="Location" value="Earth (Replacement Dimension)" />
+              <Detail label="Gender" value={selectedCharacter.gender} />
+              <Detail label="Species" value={selectedCharacter.species?.name} />
+              <Detail label="Status" value={selectedCharacter.status} />
             </div>
           )}
         </div>

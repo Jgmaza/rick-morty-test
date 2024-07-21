@@ -1,4 +1,4 @@
-import { Popover } from "@radix-ui/react-popover";
+import { Popover } from "../ui/popover";
 import React from "react";
 import { Input } from "../ui/input";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 const SearchInput = () => {
   return (
     <div className="flex items-center w-full px-4 py-[9px] bg-gray-100 rounded-md">
-      <i className="fa-solid fa-search text-purple-700"></i>
+      <i className="fa-solid fa-search text-gray-500"></i>
       <Input
         type="text"
         placeholder="Search or filter results"

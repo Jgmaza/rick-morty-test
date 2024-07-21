@@ -1,13 +1,9 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ICharacter } from "@/lib/types";
 
 interface CustomCardProps {
-  character: {
-    name: string;
-    species: string;
-    image: string;
-    isFavorite: boolean;
-  };
+  character: ICharacter;
   onClick: () => void;
   selectedCharacter: any;
 }
@@ -34,13 +30,13 @@ const CustomCard = ({
       </Avatar>
       <div className="flex flex-col w-full">
         <h1 className="text-md font-bold">{character.name}</h1>
-        <p className="text-sm text-gray-500">{character.species}</p>
+        <p className="text-sm text-gray-500">{character?.species?.name}</p>
       </div>
       <div className="flex items-center bg-white rounded-full p-2">
         <i
           className={`fa-${
             character.isFavorite ? "solid" : "regular"
-          }  fa-heart text-${character.isFavorite ? "green" : "gray-500"}`}
+          } fa-heart ${character.isFavorite ? "text-green" : "text-gray-500"}`}
         ></i>
       </div>
     </div>
