@@ -7,23 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { ICharacter } from "@/lib/types";
-
-const GET_CHARACTERS = gql`
-  query GetCharacters {
-    characters {
-      id
-      name
-      species {
-        name
-        id
-      }
-      gender
-      status
-      image
-      isFavorite
-    }
-  }
-`;
+import { GET_CHARACTERS } from "@/lib/apollo/queries";
 
 export default function Home() {
   const { loading, error, data } = useQuery<{
@@ -70,7 +54,7 @@ export default function Home() {
               <p>
                 CHARACTERS (
                 {
-                  data?.characters.filter(
+                  data?.characters?.filter(
                     (character: ICharacter) => !character.isFavorite
                   ).length
                 }
