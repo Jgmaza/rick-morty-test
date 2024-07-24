@@ -1,7 +1,7 @@
 import sequelize from "./connection";
-import Species from "./models/Species";
-import Character from "./models/Character";
-import Comment from "./models/Comment";
+import Species from "./models/species";
+import Character from "./models/character";
+import Comment from "./models/comment";
 
 const syncDatabase = async () => {
   try {
