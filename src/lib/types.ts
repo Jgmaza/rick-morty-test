@@ -9,9 +9,9 @@ export interface IComment {
   characterId: string;
 }
 
-export type IGenders = "Male" | "Female" | "Genderless" | "Unknown";
+export type IGenders = "Male" | "Female" | "Genderless" | "unknown";
 
-export type IStatus = "Alive" | "Dead" | "Unknown";
+export type IStatus = "Alive" | "Dead" | "unknown";
 
 export interface ICharacter {
   id: string;

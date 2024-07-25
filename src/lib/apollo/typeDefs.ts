@@ -8,13 +8,13 @@ export const typeDefs = `#graphql
     Male
     Female
     Genderless
-    Unknown
+    unknown
   }
 
   enum CharacterStatus {
     Alive
     Dead
-    Unknown
+    unknown
   }
 
   type Character {
