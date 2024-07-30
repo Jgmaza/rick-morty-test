@@ -3,7 +3,7 @@ import { typeDefs } from "@/lib/apollo/typeDefs";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
-const server = new ApolloServer({
+const server = new ApolloServer({ 
   typeDefs,
   resolvers,
 });
