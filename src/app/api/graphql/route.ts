@@ -3,7 +3,7 @@ import { typeDefs } from "@/lib/apollo/typeDefs";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
-const server = new ApolloServer({ 
+const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
@@ -16,30 +16,36 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-export async function GET(request: Request) {
+async function handleRequest(request: Request) {
   if (request.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
       headers: corsHeaders,
     });
   }
+  
+  if (request.method !== 'GET' && request.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
+    });
+  }
+
   const response = await handler(request);
   Object.entries(corsHeaders).forEach(([key, value]) => {
     response.headers.set(key, value);
   });
+
   return response;
 }
 
+export async function GET(request: Request) {
+  return handleRequest(request);
+}
+
 export async function POST(request: Request) {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders,
-    });
-  }
-  const response = await handler(request);
-  Object.entries(corsHeaders).forEach(([key, value]) => {
-    response.headers.set(key, value);
-  });
-  return response;
+  return handleRequest(request);
 }
