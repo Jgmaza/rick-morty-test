@@ -1,7 +1,8 @@
 import { Sequelize } from 'sequelize';
 
 // Conexión a la base de datos
-const sequelize = new Sequelize(process.env.DB_URL!, {
+const dbUrl = process.env.DB_URL || 'default_db_url';
+const sequelize = new Sequelize(dbUrl, {
   dialect: 'postgres',
   dialectOptions: {
     ssl: {
