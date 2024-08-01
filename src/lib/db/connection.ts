@@ -1,24 +1,27 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize } from "sequelize";
 
 // Conexión a la base de datos
-const dbUrl = process.env.DB_URL || 'default_db_url';
-const sequelize = new Sequelize(dbUrl, {
-  dialect: 'postgres',
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const sequelize = new Sequelize(process.env.DB_URL!, {
+  dialect: "postgres",
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false // Solo si estás usando un certificado SSL autofirmado
-    }
-  }
+      rejectUnauthorized: false, // Solo si estás usando un certificado SSL autofirmado
+    },
+  },
 });
 
 // Conection verification
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('Conexión establecida correctamente.');
+    console.log("Conexión establecida correctamente.");
   } catch (err) {
-    console.error('No se pudo conectar a la base de datos:', err);
+    console.error("No se pudo conectar a la base de datos:", err);
   }
 })();
 
