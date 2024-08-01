@@ -5,7 +5,8 @@ const sequelize = new Sequelize(process.env.DB_URL!, {
   dialect: 'postgres',
   dialectOptions: {
     ssl: {
-      require: true, // This is to avoid issues with self-signed SSL certificates
+      require: true,
+      rejectUnauthorized: false // Solo si estás usando un certificado SSL autofirmado
     }
   }
 });
