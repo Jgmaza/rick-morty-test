@@ -23,7 +23,7 @@ async function handleRequest(request: Request) {
       headers: corsHeaders,
     });
   }
-  
+
   if (request.method !== 'GET' && request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
@@ -34,12 +34,22 @@ async function handleRequest(request: Request) {
     });
   }
 
-  const response = await handler(request);
-  Object.entries(corsHeaders).forEach(([key, value]) => {
-    response.headers.set(key, value);
-  });
-
-  return response;
+  try {
+    const response = await handler(request);
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    return response;
+  } catch (error) {
+    console.error('Error handling request:', error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
+    });
+  }
 }
 
 export async function GET(request: Request) {
