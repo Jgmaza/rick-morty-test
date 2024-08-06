@@ -6,13 +6,18 @@ import SearchInput from "@/components/custom/searchInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { ICharacter } from "@/lib/types";
+import { ICharacter, ICharacterFilter } from "@/lib/types";
 import { GET_CHARACTERS } from "@/lib/apollo/queries";
 
 export default function Home() {
+  const [filters, setFilters] = useState<ICharacterFilter>({});
   const { loading, error, data } = useQuery<{
     characters: ICharacter[];
-  }>(GET_CHARACTERS);
+  }>(GET_CHARACTERS, {
+    variables: {
+      filter: filters
+    },
+  });
 
   const [selectedCharacter, setSelectedCharacter] = useState<ICharacter>();
   return (
@@ -26,7 +31,7 @@ export default function Home() {
               Rick and Morty List
             </h1>
           </div>
-          <SearchInput />
+          <SearchInput setFilters={setFilters} />
           {/* Character list */}
           <div className="h-full overflow-y-auto mt-8">
             <div className="pl-5 pb-4 text-sm text-gray-500">

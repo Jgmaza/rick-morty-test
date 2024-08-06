@@ -1,16 +1,13 @@
 import { Sequelize } from "sequelize";
-import pg from 'pg';
+import pg from "pg";
 
 // Conexión a la base de datos
 import dotenv from "dotenv";
 
-
 dotenv.config();
 
-console.log('DATABASE_URL:', process.env.DB_URL);
-
 const sequelize = new Sequelize(process.env.DB_URL!, {
-  dialectModule: pg
+  dialectModule: pg,
 });
 
 // Conection verification
