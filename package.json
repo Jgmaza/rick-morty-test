@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:migrate": "sequelize-cli db:migrate"
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:populate": "ts-node ./src/public/scripts/populate-db.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.10.8",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.11",
+    "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

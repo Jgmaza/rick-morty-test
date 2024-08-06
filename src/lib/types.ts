@@ -22,3 +22,11 @@ export interface ICharacter {
   image: string;
   isFavorite: boolean;
 }
+
+export interface ICharacterFilter {
+  name?: string;
+  speciesId?: string;
+  favorites?: boolean;
+  others?: boolean;
+  gender?: IGenders;
+}

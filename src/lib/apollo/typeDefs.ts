@@ -1,7 +1,7 @@
 export const typeDefs = `#graphql
   type Species {
-    name: String
     id: ID
+    name: String
   }
 
   enum CharacterGender {
@@ -18,8 +18,8 @@ export const typeDefs = `#graphql
   }
 
   type Character {
-    name: String
     id: ID
+    name: String
     status: CharacterStatus
     gender: CharacterGender
     species: Species
@@ -34,9 +34,22 @@ export const typeDefs = `#graphql
     species: Species
   }
 
+  input CharacterFilterInput {
+    name: String
+    gender: CharacterGender
+    speciesId: ID
+    favorites: Boolean
+    others: Boolean
+  }
+
   type Query {
     species: [Species]
-    characters: [Character]
+    characters(filter: CharacterFilterInput): [Character]
     comments: [Comment]
+  }
+
+  type Mutation {
+    addComment(comment: String!, characterId: ID!): Comment
+    toggleFavorite(characterId: ID!): Character
   }
 `;

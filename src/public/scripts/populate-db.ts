@@ -69,15 +69,19 @@ const populateDatabase = async () => {
       // Encuentra o crea la especie
       const species = await findOrCreateSpecies({ id: null, name: character.species });
 
-      // Crea el personaje
-      await Character.create({
-        id: character.id,
-        name: character.name,
-        status: character.status,
-        gender: character.gender,
-        speciesId: species.id, // Usar el ID de la especie encontrada o creada
-        image: character.image,
-      });
+      try {
+        // Crea el personaje
+        await Character.create({
+          id: character.id,
+          name: character.name,
+          status: character.status,
+          gender: character.gender,
+          speciesId: species.id, // Usar el ID de la especie encontrada o creada
+          image: character.image,
+        });
+      } catch (error) {
+        console.error("Error creating character:", error);
+      }
     }
 
     console.log("Database populated with characters successfully.");
