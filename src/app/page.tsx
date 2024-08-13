@@ -5,17 +5,19 @@ import Detail from "@/components/custom/detail";
 import SearchInput from "@/components/custom/searchInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
-import { useQuery, gql } from "@apollo/client";
-import { ICharacter, ICharacterFilter } from "@/lib/types";
-import { GET_CHARACTERS } from "@/lib/apollo/queries";
+import { useQuery } from "@apollo/client";
+import { ICharacter, ICharacterFilter, ISpecies } from "@/lib/types";
+import { GET_CHARACTERS_AND_SPECIES } from "@/lib/apollo/queries";
+import Spinner from "@/components/custom/spinner";
 
 export default function Home() {
   const [filters, setFilters] = useState<ICharacterFilter>({});
   const { loading, error, data } = useQuery<{
     characters: ICharacter[];
-  }>(GET_CHARACTERS, {
+    species: ISpecies[];
+  }>(GET_CHARACTERS_AND_SPECIES, {
     variables: {
-      filter: filters
+      filter: filters,
     },
   });
 
@@ -31,52 +33,64 @@ export default function Home() {
               Rick and Morty List
             </h1>
           </div>
-          <SearchInput setFilters={setFilters} />
+          <SearchInput setFilters={setFilters} species={data?.species} />
           {/* Character list */}
-          <div className="h-full overflow-y-auto mt-8">
-            <div className="pl-5 pb-4 text-sm text-gray-500">
-              <p>
-                STARRED CHARACTERS (
-                {
-                  data?.characters?.filter(
-                    (character: ICharacter) => character.isFavorite
-                  ).length
-                }
-                )
-              </p>
+          {loading && (
+            <div className="flex items-center justify-center h-full w-full">
+              <Spinner className="text-[30px]" />
             </div>
-            {data?.characters
-              ?.filter((character: ICharacter) => character.isFavorite)
-              .map((character: ICharacter) => (
-                <CustomCard
-                  key={character.id}
-                  character={character}
-                  onClick={() => setSelectedCharacter(character)}
-                  selectedCharacter={selectedCharacter}
-                />
-              ))}
-            <div className="mt-8 pl-5 pb-4 text-sm text-gray-500">
-              <p>
-                CHARACTERS (
-                {
-                  data?.characters?.filter(
-                    (character: ICharacter) => !character.isFavorite
-                  ).length
-                }
-                )
-              </p>
+          )}
+          {error && (
+            <div className="flex items-center justify-center h-full w-full">
+              <p className="text-red-500">{error.message}</p>
             </div>
-            {data?.characters
-              ?.filter((character: ICharacter) => !character.isFavorite)
-              .map((character: ICharacter) => (
-                <CustomCard
-                  key={character.id}
-                  character={character}
-                  onClick={() => setSelectedCharacter(character)}
-                  selectedCharacter={selectedCharacter}
-                />
-              ))}
-          </div>
+          )}
+          {!loading && !error && (
+            <div className="h-full overflow-y-auto mt-8">
+              <div className="pl-5 pb-4 text-sm text-gray-500">
+                <p>
+                  STARRED CHARACTERS (
+                  {
+                    data?.characters?.filter(
+                      (character: ICharacter) => character.isFavorite
+                    ).length
+                  }
+                  )
+                </p>
+              </div>
+              {data?.characters
+                ?.filter((character: ICharacter) => character.isFavorite)
+                .map((character: ICharacter) => (
+                  <CustomCard
+                    key={character.id}
+                    character={character}
+                    onClick={() => setSelectedCharacter(character)}
+                    selectedCharacter={selectedCharacter}
+                  />
+                ))}
+              <div className="mt-8 pl-5 pb-4 text-sm text-gray-500">
+                <p>
+                  CHARACTERS (
+                  {
+                    data?.characters?.filter(
+                      (character: ICharacter) => !character.isFavorite
+                    ).length
+                  }
+                  )
+                </p>
+              </div>
+              {data?.characters
+                ?.filter((character: ICharacter) => !character.isFavorite)
+                .map((character: ICharacter) => (
+                  <CustomCard
+                    key={character.id}
+                    character={character}
+                    onClick={() => setSelectedCharacter(character)}
+                    selectedCharacter={selectedCharacter}
+                  />
+                ))}
+            </div>
+          )}
         </div>
         {/* Character details */}
         <div
