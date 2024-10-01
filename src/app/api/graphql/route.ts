@@ -6,6 +6,7 @@ import { startServerAndCreateNextHandler } from "@as-integrations/next";
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
 });
 
 const handler = startServerAndCreateNextHandler(server);

@@ -7,21 +7,44 @@ import { ICharacterFilter, ISpecies } from "@/lib/types";
 
 interface SearchInputProps {
   setFilters: Dispatch<SetStateAction<ICharacterFilter>>;
+  filters: ICharacterFilter;
   species?: ISpecies[];
 }
 
 interface FilterButtonProps {
   children: React.ReactNode;
-  parameter: string
-  value: string | boolean | number;
+  parameter: string | string[];
+  value: string | boolean | number | (string | boolean | number)[];
   setFilters: Dispatch<SetStateAction<ICharacterFilter>>;
+  filters: ICharacterFilter;
 }
 
-const FilterButton = ({ children, parameter, value, setFilters }: FilterButtonProps) => {
+const FilterButton = ({
+  children,
+  parameter,
+  value,
+  setFilters,
+  filters,
+}: FilterButtonProps) => {
   return (
-    <Button className="" variant="outline" onClick={() => {
-      setFilters((prev) => ({ ...prev, [parameter]: value }));
-    }}>
+    <Button
+      className=""
+      variant="outline"
+      onClick={() => {
+        if (typeof parameter === "string") {
+          setFilters((prev) => ({ ...prev, [parameter]: value }));
+        }
+        if (Array.isArray(parameter) && Array.isArray(value)) {
+          setFilters((prev) => ({
+            ...prev,
+            ...parameter.reduce(
+              (acc, curr, i) => ({ ...acc, [curr]: value[i] }),
+              {}
+            ),
+          }));
+        }
+      }}
+    >
       {children}
     </Button>
   );
@@ -61,37 +84,43 @@ const SearchInput = ({ setFilters, species }: SearchInputProps) => {
             <div>
               <p className="text-gray-500 text-sm">Character</p>
               <div className="flex flex-row gap-2">
-                <Button className="" variant="outline" onClick={() => {
-                  if (setFilters) {
-                    setFilters((prev) => ({ ...prev, favorites: true, others: true }));
-                  }
-                }
-                }>
+                <FilterButton
+                  parameter={["favorites", "others"]}
+                  value={[true, true]}
+                  setFilters={setAuxFilters}
+                  filters={auxFilters}
+                >
                   All
-                </Button>
-                
-                <Button className="" variant="outline" onClick={() => {
-                  if (setFilters) {
-                    setFilters((prev) => ({ ...prev, favorites: !prev.favorites }));
-                  }
-                }}>
-                  Favorites
-                </Button>
+                </FilterButton>
 
-                <Button className="" variant="outline" onClick={() => {
-                  if (setFilters) {
-                    setFilters((prev) => ({ ...prev, others: !prev.others }));
-                  }
-                }}>
+                <FilterButton
+                  parameter={["favorites", "others"]}
+                  value={[true, false]}
+                  setFilters={setAuxFilters}
+                  filters={auxFilters}
+                >
+                  Favorites
+                </FilterButton>
+                <FilterButton
+                  parameter={["favorites", "others"]}
+                  value={[false, true]}
+                  setFilters={setAuxFilters}
+                  filters={auxFilters}
+                >
                   Others
-                </Button>
+                </FilterButton>
               </div>
             </div>
 
             <div>
               <p className="text-gray-500 text-sm">Specie</p>
               <div className="flex flex-row gap-2">
-                <FilterButton parameter="speciesId" value="" setFilters={setFilters}>
+                <FilterButton
+                  parameter="speciesId"
+                  value=""
+                  setFilters={setAuxFilters}
+                  filters={auxFilters}
+                >
                   All
                 </FilterButton>
                 {species?.map((specie) => (
@@ -99,13 +128,17 @@ const SearchInput = ({ setFilters, species }: SearchInputProps) => {
                     key={specie.id}
                     parameter="speciesId"
                     value={specie.id}
-                    setFilters={setFilters}
+                    setFilters={setAuxFilters}
+                    filters={auxFilters}
                   >
                     {specie.name}
                   </FilterButton>
                 ))}
               </div>
             </div>
+            <Button className="w-full" onClick={() => setFilters(auxFilters)}>
+              Filter
+            </Button>
           </div>
         </PopoverContent>
       </Popover>

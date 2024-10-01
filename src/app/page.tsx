@@ -33,7 +33,7 @@ export default function Home() {
               Rick and Morty List
             </h1>
           </div>
-          <SearchInput setFilters={setFilters} species={data?.species} />
+          <SearchInput setFilters={setFilters} filters={filters} species={data?.species} />
           {/* Character list */}
           {loading && (
             <div className="flex items-center justify-center h-full w-full">
