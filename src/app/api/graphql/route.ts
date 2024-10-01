@@ -1,12 +1,16 @@
 import resolvers from "@/lib/apollo/resolvers";
 import { typeDefs } from "@/lib/apollo/typeDefs";
 import { ApolloServer } from "@apollo/server";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true,
+  plugins: [
+    ApolloServerPluginLandingPageGraphQLPlayground(), // Agrega el plugin aquí
+  ],
 });
 
 const handler = startServerAndCreateNextHandler(server);
@@ -18,15 +22,15 @@ const corsHeaders = {
 };
 
 async function handleRequest(request: Request) {
-  if (request.method === 'OPTIONS') {
+  if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
       headers: corsHeaders,
     });
   }
 
-  if (request.method !== 'GET' && request.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+  if (request.method !== "GET" && request.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
       headers: {
         "Content-Type": "application/json",
@@ -42,8 +46,8 @@ async function handleRequest(request: Request) {
     });
     return response;
   } catch (error) {
-    console.error('Error handling request:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+    console.error("Error handling request:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
       headers: {
         "Content-Type": "application/json",
